@@ -15,7 +15,6 @@ RSpec.describe 'Foo API', type: :request do
       expect(request.method).to eq 'GET'
       expect(response).to have_http_status :ok
       expect(response.content_type).to eq 'application/json'
-      expect(response['X-Frame-Options']).to eq 'SAMEORIGIN'
     end
 
     it 'returns all instance' do
@@ -51,7 +50,7 @@ RSpec.describe 'Foo API', type: :request do
       payload = parsed_body
       expect(payload).to have_key 'errors'
       expect(payload['errors']).to have_key 'full_messages'
-      expect(payload['errors']['full_messages']).to include %W(cannot #{bad_id})
+      expect(payload['errors']['full_messages'][0]).to include 'cannot', bad_id.to_s
     end
     
   end
@@ -60,7 +59,7 @@ RSpec.describe 'Foo API', type: :request do
     let(:foo_attr) { FactoryGirl.attributes_for :foo }
 
     it 'can create Foo with provided name' do
-      post foos_path, params: foo_attr
+      post foos_path, params: { foo: foo_attr}
       expect(response).to have_http_status :created
       expect(response.content_type).to eq 'application/json'
     end
@@ -73,7 +72,7 @@ RSpec.describe 'Foo API', type: :request do
 
     it 'can be updated from API endpoint' do
       expect(foo.name).to_not eq new_name # Verify false-positive
-      put foo_path(foo.id), params: { name: new_name }
+      put foo_path(foo.id), params: { foo: { name: new_name } }
       expect(response).to have_http_status :no_content
       expect(Foo.find(foo.id).name).to eq new_name
     end

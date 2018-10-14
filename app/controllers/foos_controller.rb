@@ -1,5 +1,6 @@
 class FoosController < ApplicationController
   before_action :set_foo, only: [:show, :update, :destroy]
+  wrap_parameters :foo, include: ['name']
 
   # GET /foos
   def index
@@ -27,7 +28,7 @@ class FoosController < ApplicationController
   # PATCH/PUT /foos/1
   def update
     if @foo.update(foo_params)
-      render json: @foo
+      render json: @foo, status: :no_content
     else
       render json: @foo.errors, status: :unprocessable_entity
     end
