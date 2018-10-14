@@ -1,0 +1,107 @@
+AllCops:
+  Exclude:
+    - "vendor/**/*"
+    - "db/**/*"
+    - "tmp/**/*"
+    - "bin/**/*"
+    - "log/**/*"
+    - "config/**/*"
+    - "app/assets/**/*"
+    - "Rakefile"
+    - "spec/cassettes/**/*"
+    - "micro-shared/**/*"
+    - "Gemfile"
+    - "Gemfile.lock"
+    - "node_modules/**/*"
+    - "spec/rails_helper.rb"
+    - "spec/spec_helper.rb"
+  UseCache: false
+  TargetRubyVersion: 2.5
+
+#################### Lint ###########################
+Lint/AssignmentInCondition:
+  Enabled: false
+Lint/HandleExceptions:
+  Enabled: false
+Lint/UnusedBlockArgument:
+  Enabled: false
+#################### Metric ###########################
+Metrics/AbcSize:
+  Enabled: false
+  Max: 20
+Metrics/ClassLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/LineLength:
+  Enabled: false
+  Max: 120
+Metrics/BlockLength:
+  CountComments: false
+  Exclude:
+    - "spec/**/*"
+    - "link_community.gemspec"
+  Max: 150
+#################### Style ###########################
+Style/RegexpLiteral:
+  Exclude:
+    - Guardfile
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/PercentLiteralDelimiters:
+  Enabled: true
+  PreferredDelimiters:
+    "%": "()"
+    "%i": "()"
+    "%q": "()"
+    "%Q": "()"
+    "%r": "{}"
+    "%s": "()"
+    "%w": "()"
+    "%W": "()"
+    "%x": "()"
+Style/WordArray:
+  Enabled: false
+#################### Layout ###########################
+Layout/TrailingBlankLines:
+  AutoCorrect: true
+Layout/DotPosition:
+  Enabled: true
+  EnforcedStyle: trailing
+  SupportedStyles:
+  - leading
+  - trailing
+Layout/IndentHash:
+  Enabled: true
+  EnforcedStyle: consistent
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+  EnforcedStyle: indented
+Layout/MultilineAssignmentLayout:
+  Enabled: true
+  EnforcedStyle: same_line
+Layout/AlignParameters:
+  Enabled: true
+  EnforcedStyle: with_fixed_indentation
+Layout/EndAlignment:
+  Enabled: true
+  EnforcedStyleAlignWith: start_of_line
+Layout/CaseIndentation:
+  Enabled: true
+  EnforcedStyle: end
+Layout/EndOfLine:
+  Enabled: false
+  EnforcedStyle: native
+Layout/TrailingWhitespace:
+  Enabled: false
+#################### Naming ###########################
+Naming/PredicateName:
+  Enabled: true
+  NamePrefix:
+  - is_
+  - has_
+  - have_
+  NamePrefixBlacklist:
+  - is_
+  Exclude:
+  - spec/**/*
