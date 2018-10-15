@@ -59,7 +59,7 @@ RSpec.describe 'Foo API', type: :request do
     let(:foo_attr) { FactoryGirl.attributes_for :foo }
 
     it 'can create Foo with provided name' do
-      post foos_path, params: { foo: foo_attr}
+      post foos_path, params: { foo: foo_attr }
       expect(response).to have_http_status :created
       expect(response.content_type).to eq 'application/json'
     end
@@ -73,7 +73,7 @@ RSpec.describe 'Foo API', type: :request do
     it 'can be updated from API endpoint' do
       expect(foo.name).to_not eq new_name # Verify false-positive
       put foo_path(foo.id), params: { foo: { name: new_name } }
-      expect(response).to have_http_status :no_content
+      expect(response).to have_http_status :ok
       expect(Foo.find(foo.id).name).to eq new_name
     end
 
