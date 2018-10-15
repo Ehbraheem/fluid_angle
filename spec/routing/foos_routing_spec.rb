@@ -10,7 +10,6 @@ RSpec.describe FoosController, type: :routing do
       expect(get: foo_path(1)).to route_to('foos#show', id: '1', format: :json)
     end
 
-
     it 'routes to #create' do
       expect(post: foos_path).to route_to('foos#create', format: :json)
     end

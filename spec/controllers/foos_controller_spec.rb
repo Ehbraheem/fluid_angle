@@ -119,5 +119,4 @@ RSpec.describe FoosController, type: :controller do
       end.to change(Foo, :count).by(-1)
     end
   end
-
 end
