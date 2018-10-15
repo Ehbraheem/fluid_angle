@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::API
+   # make the connection between controller action and associated view
+  include ActionController::ImplicitRender
+  
   # Intercept RecordNotFound exception and render JSON error response
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
