@@ -4,7 +4,7 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.2]
     create_table(:users) do |t|
       ## Required
       t.string :provider, :null => false, :default => "email"
-      t.string :username, :null => false, :default => ""
+      t.string :uid, :null => false, :default => ""
 
       ## Database authenticatable
       t.string :encrypted_password, :null => false, :default => ""
@@ -39,7 +39,8 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.2]
       t.string :name
       t.string :nickname
       t.string :image
-      t.string :email
+      t.string :email,    null: false
+      t.string :username, null: false
 
       ## Tokens
       t.json :tokens
@@ -48,9 +49,10 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.2]
     end
 
     add_index :users, :email,                unique: true
-    add_index :users, [:username, :provider],     unique: true
+    add_index :users, [:uid, :provider],     unique: true
     add_index :users, :reset_password_token, unique: true
     add_index :users, :confirmation_token,   unique: true
+    add_index :users, :username,             unique: true
     # add_index :users, :unlock_token,       unique: true
   end
 
@@ -58,7 +60,8 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.2]
     remove_index :users, :email
     remove_index :users, :reset_password_token
     remove_index :users, :confirmation_token
-    remove_index :users, [:username, :provider]
+    remove_index :users, [:uid, :provider]
+    remove_index :users, :username
 
     drop_table :users
   end

@@ -9,6 +9,8 @@ class ApplicationController < ActionController::API
   # Intercept ActionController::ParameterMissing exception
   rescue_from ActionController::ParameterMissing, with: :param_missing
 
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
   protected
 
   def record_not_found(exception)
@@ -26,5 +28,11 @@ class ApplicationController < ActionController::API
       errors: { full_messages: [error] }
     }
     render json: payload, status: status
+  end
+
+  def configure_permitted_parameters
+    added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]
+    devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
+    devise_parameter_sanitizer.permit :account_update, keys: added_attrs
   end
 end
