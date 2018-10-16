@@ -6,6 +6,7 @@ class CreateContacts < ActiveRecord::Migration[5.2]
       t.bigint :phone_number
       t.string :email
       t.boolean :star
+      t.references :user, index: true, foreign_key: true, null: false
 
       t.timestamps
     end
@@ -16,6 +17,7 @@ class CreateContacts < ActiveRecord::Migration[5.2]
 
   def down
     remove_index :contacts, :star
+    remove_index :contacts, :user_id
     drop_table :contacts
   end
 end

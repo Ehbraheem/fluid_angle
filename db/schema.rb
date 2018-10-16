@@ -21,9 +21,11 @@ ActiveRecord::Schema.define(version: 2018_10_15_190936) do
     t.bigint "phone_number"
     t.string "email"
     t.boolean "star"
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["star"], name: "index_contacts_on_star"
+    t.index ["user_id"], name: "index_contacts_on_user_id"
   end
 
   create_table "foos", force: :cascade do |t|
@@ -62,4 +64,5 @@ ActiveRecord::Schema.define(version: 2018_10_15_190936) do
     t.index ["username", "provider"], name: "index_users_on_username_and_provider", unique: true
   end
 
+  add_foreign_key "contacts", "users"
 end
