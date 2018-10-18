@@ -3,7 +3,7 @@ class Contact < ApplicationRecord
 
   %W(first_name last_name).each do |name|
     validates name, presence: :true
-    validates_format_of name, with: /^[a-zA-Z\.'-_]*$/, multiline: true
+    validates_format_of name, with: /\A[a-zA-Z\.'-_]*\z/#, multiline: true
   end
 
   validates :email, presence: :true, uniqueness: { case_sensitive: false }

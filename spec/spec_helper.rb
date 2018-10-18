@@ -16,6 +16,8 @@
 # Add DBCleaner
 require_relative 'support/database_cleaner.rb'
 
+Dir[File.dirname(__FILE__) +  "/support/*.rb"].each { |file| require_relative file }
+
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
@@ -41,6 +43,8 @@ RSpec.configure do |config|
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
   end
+
+  config.include ModelsHelper, type: :model
 
   # This option will default to `:apply_to_host_groups` in RSpec 4 (and will
   # have no way to turn it off -- the option exists only for backwards
