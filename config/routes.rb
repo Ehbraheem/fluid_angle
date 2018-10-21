@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'auth/whoami'
+  get 'auth/checkme'
   resources :contacts
   scope :api, defaults: {format: :json} do
     resources :foos
