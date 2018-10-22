@@ -14,7 +14,7 @@
 #
 
 # Add DBCleaner
-require_relative 'support/database_cleaner.rb'
+# require_relative 'support/database_cleaner.rb'
 
 Dir[File.dirname(__FILE__) +  "/support/*.rb"].each { |file| require_relative file }
 
@@ -47,6 +47,7 @@ RSpec.configure do |config|
   config.include ModelsHelper, type: :model
 
   config.include ApiHelper, type: :request
+  config.include ModelsHelper, type: :request
 
   # This option will default to `:apply_to_host_groups` in RSpec 4 (and will
   # have no way to turn it off -- the option exists only for backwards

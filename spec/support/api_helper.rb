@@ -1,4 +1,6 @@
 module ApiHelper
+
+  # include ::ModelsHelper
   
   def parsed_body
     JSON.parse response.body
@@ -48,5 +50,89 @@ module ApiHelper
       @last_tokens = %W(uid client token-type access-token).inject({}) { |mem, var| mem[var] = response.headers[var]; mem }
     end
     @last_tokens || {}
+  end
+end
+
+
+RSpec.shared_examples 'all resource' do |model, parent = nil|
+  let(:ancestr) { create_parent parent }
+  let!(:resources) { (1..5).map { |e| FactoryGirl.create model, ancestr } }
+  let(:payload) { parsed_body}
+
+  it 'check request/response' do
+    jget send("#{model}s_path"), {}, { 'Accept' => 'application/json' }
+    expect(request.method).to eq 'GET'
+    expect(response).to have_http_status :ok
+    expect(response.content_type).to eq 'application/json'
+  end
+
+  it 'returns all resource' do
+    jget send("#{model}s_path"), {}, { 'Accept' => 'application/json' }
+
+    expect(response).to have_http_status :ok
+    expect(payload.count).to eq resources.count
+    response_check if respond_to?(:response_check)
+  end
+end
+
+RSpec.shared_examples 'specific resource' do |model, parent = nil|
+  let(:ancestr) { create_parent parent }
+  let(:resource) { FactoryGirl.create model, ancestr }
+  let(:bad_id) { 4_556_645 }
+  let(:payload) { parsed_body}
+
+  it "returns #{model.to_s.classify} when given correct ID" do
+    jget send("#{model}_path", resource.id)
+    expect(response).to have_http_status :ok
+    expect(response.content_type).to eq 'application/json'
+
+    response_check if respond_to?(:response_check)
+  end
+
+  it 'returns not found using incorrect ID' do
+    jget send("#{model}_path", bad_id)
+    expect(response).to have_http_status :not_found
+    expect(response.content_type).to eq 'application/json'
+
+    error_check if respond_to?(:error_check)
+  end
+  
+end
+
+RSpec.shared_examples 'create a new resource' do |model, parent = nil|
+  let(:ancestr) { create_parent parent }
+  let(:resource_attr) { FactoryGirl.attributes_for model, ancestr }
+
+  it "can create #{model.to_s.classify}" do
+    jpost send("#{model}s_path"), { model => resource_attr }
+    expect(response).to have_http_status :created
+    expect(response.content_type).to eq 'application/json'
+
+    check_data if respond_to?(:check_data)
+  end
+  
+end
+
+RSpec.shared_examples 'existing resource' do |model, parent = nil|
+  let(:ancestr) { create_parent parent }
+  let(:resource) { FactoryGirl.create model, ancestr }
+  let(:new_state) { FactoryGirl.attributes_for model }
+
+  it 'can be updated from API endpoint' do
+    pre_check if respond_to?(:pre_check)
+    jput send("#{model}_path", resource.id), { model => new_state }
+    expect(response).to have_http_status :ok
+    post_check if respond_to?(:post_check)
+  end
+
+  it 'can be deleted from API endpoint' do
+    jhead send("#{model}_path", resource.id)
+    expect(response).to have_http_status :ok
+
+    jdelete send("#{model}_path", resource.id)
+    expect(response).to have_http_status :no_content
+
+    jhead send("#{model}_path", resource.id)
+    expect(response).to have_http_status :not_found
   end
 end

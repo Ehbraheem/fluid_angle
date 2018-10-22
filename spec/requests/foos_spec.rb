@@ -5,87 +5,55 @@ def parsed_body
 end
 
 RSpec.describe 'Foo API', type: :request do
-  include_context 'db_cleanup_each'
+  include_context 'db_cleanup_each', :transaction
 
-  context 'caller requests all Foos' do
-    let!(:foos) { (1..5).map { |e| FactoryGirl.create :foo } }
-
-    it 'check request/response' do
-      get foos_path, headers: { 'Accept' => 'application/json' }
-      expect(request.method).to eq 'GET'
-      expect(response).to have_http_status :ok
-      expect(response.content_type).to eq 'application/json'
-    end
-
-    it 'returns all instance' do
-      get foos_path, headers: { 'Accept' => 'application/json' }
-
-      expect(response).to have_http_status :ok
-      payload = parsed_body
-      expect(payload.count).to eq foos.count
-      expect(payload.map { |e| e['name'] }).to eq(foos.map { |e| e[:name] }) # No sort/paginate
+  context 'caller requests all Foo' do
+    it_should_behave_like 'all resource', :foo do
+      let(:response_check) do
+        expect(payload.count).to eq resources.count
+        expect(payload.map { |e| e['name'] }).to eq(resources.map { |e| e[:name] }) # No sort/paginate
+      end
     end
   end
+  
+  context 'specific Foo' do
+    it_should_behave_like 'specific resource', :foo do
+      let(:response_check) do
+        expect(payload).to have_key 'id'
+        expect(payload).to have_key 'name'
+        expect(payload['id']).to eq(resource.id)
+        expect(payload['name']).to eq resource.name
+      end
 
-  context 'caller request specific Foo' do
-    let(:foo) { FactoryGirl.create :foo }
-    let(:bad_id) { 4_556_645 }
-
-    it 'returns Foo when given correct ID' do
-      get foo_path(foo.id)
-      expect(response).to have_http_status :ok
-
-      payload = parsed_body
-      expect(payload).to have_key 'id'
-      expect(payload).to have_key 'name'
-      expect(payload['id']).to eq(foo.id)
-      expect(payload['name']).to eq foo.name
+      let(:error_check) do
+        expect(payload).to have_key 'errors'
+        expect(payload['errors']).to have_key 'full_messages'
+        expect(payload['errors']['full_messages'][0]).to include 'cannot', bad_id.to_s
+      end
     end
-
-    it 'returns not found using incorrect ID' do
-      get foo_path(bad_id)
-      expect(response).to have_http_status :not_found
-      expect(response.content_type).to eq 'application/json'
-
-      payload = parsed_body
-      expect(payload).to have_key 'errors'
-      expect(payload['errors']).to have_key 'full_messages'
-      expect(payload['errors']['full_messages'][0]).to include 'cannot', bad_id.to_s
-    end
-    
   end
 
   context 'caller create a new Foo' do
-    let(:foo_attr) { FactoryGirl.attributes_for :foo }
-
-    it 'can create Foo with provided name' do
-      post foos_path, params: { foo: foo_attr }
-      expect(response).to have_http_status :created
-      expect(response.content_type).to eq 'application/json'
+    it_should_behave_like 'create a new resource', :foo do
+      let(:check_data) do
+        foo = Foo.where(name: resource_attr[:name]).first
+        expect(foo).to_not be_nil
+        expect(foo).to respond_to :name, :name=
+        expect(foo.name).to eq resource_attr[:name]
+      end
     end
     
   end
 
   context 'existing Foo' do
-    let(:foo) { FactoryGirl.create :foo }
-    let(:new_name) { 'tested' }
+    it_should_behave_like 'existing resource', :foo do
+      let(:pre_check) do
+        expect(resource.name).to_not eq new_state[:name] # Verify false-positive
+      end
 
-    it 'can be updated from API endpoint' do
-      expect(foo.name).to_not eq new_name # Verify false-positive
-      put foo_path(foo.id), params: { foo: { name: new_name } }
-      expect(response).to have_http_status :ok
-      expect(Foo.find(foo.id).name).to eq new_name
-    end
-
-    it 'can be deleted from API endpoint' do
-      head foo_path(foo.id)
-      expect(response).to have_http_status :ok
-
-      delete foo_path(foo.id)
-      expect(response).to have_http_status :no_content
-
-      head foo_path(foo.id)
-      expect(response).to have_http_status :not_found
+      let(:post_check) do
+        expect(Foo.find(resource.id).name).to eq new_state[:name]
+      end
     end
   end
 end

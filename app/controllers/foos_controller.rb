@@ -29,7 +29,7 @@ class FoosController < ApplicationController
   # PATCH/PUT /foos/1
   def update
     if @foo.update(foo_params)
-      render show, status: :ok
+      render :show, status: :ok
     else
       render json: @foo.errors, status: :unprocessable_entity
     end
