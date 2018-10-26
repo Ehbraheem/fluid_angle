@@ -1,6 +1,7 @@
 class ContactsController < ApplicationController
   before_action :set_contact, only: [:show, :update, :destroy]
   wrap_parameters :contact, include: %i(first_name last_name email phone_number star user_id)
+  before_action :authenticate_user!
 
   # GET /contacts
   # GET /contacts.json
