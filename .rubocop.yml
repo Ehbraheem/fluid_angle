@@ -13,6 +13,8 @@ AllCops:
     - "Gemfile"
     - "Gemfile.lock"
     - "node_modules/**/*"
+    - "spec/rails_helper.rb"
+    - "spec/spec_helper.rb"
   UseCache: false
   TargetRubyVersion: 2.5
 
@@ -87,6 +89,11 @@ Layout/EndAlignment:
 Layout/CaseIndentation:
   Enabled: true
   EnforcedStyle: end
+Layout/EndOfLine:
+  Enabled: false
+  EnforcedStyle: native
+Layout/TrailingWhitespace:
+  Enabled: false
 #################### Naming ###########################
 Naming/PredicateName:
   Enabled: true
