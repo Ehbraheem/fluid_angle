@@ -24,6 +24,8 @@ require 'rails_helper'
 # `rails-controller-testing` gem.
 
 RSpec.describe FoosController, type: :controller do
+  include_context 'db_cleanup_each', :transaction
+
   before :each do
     request.headers['accept'] = 'application/json'
   end
