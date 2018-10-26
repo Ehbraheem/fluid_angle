@@ -3,7 +3,7 @@ require 'rails_helper'
 def attr_check(payload, resource)
   attrs.each do |attr|
     expect(payload).to have_key attr.to_s
-    expect(payload[attr.to_s]).to eq resource_attr[attr]
+    expect(payload[attr.to_s]).to eq resource[attr]
   end
 end
 
@@ -49,8 +49,9 @@ RSpec.describe "Contacts", type: :request do
           contact = Contact.where(first_name: resource_attr[:first_name]).first
           expect(contact).to_not be_nil
           
-          attrs.each { |e| expect(contact).to respond_to e, "#{attr}=" }
-          attr_check contact, resource_attr
+          attrs.each do |e| 
+            expect(contact).to respond_to e, "#{e}=" 
+          end
         end
       end
       

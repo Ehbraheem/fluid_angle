@@ -24,7 +24,7 @@ module ModelsHelper
 
   def create_parent(parent)
     return parent if !parent
-    { parent => create_db_obj(parent, nil) }
+    { "#{parent}_id" => create_db_obj(parent, nil).id }
   end
 
   def error_checker(options = {})

@@ -20,6 +20,7 @@ class FoosController < ApplicationController
 
     if @foo.save
       # render json: @foo, status: :created, location: @foo
+      # byebug
       render :show, status: :created, location: @foo
     else
       render json: @foo.errors, status: :unprocessable_entity
