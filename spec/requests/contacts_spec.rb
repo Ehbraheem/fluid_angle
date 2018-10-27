@@ -69,4 +69,66 @@ RSpec.describe "Contacts", type: :request do
       end
     end
 
+  context 'starred Contacts' do
+    let(:account) { signup user_attr, :ok }
+    let!(:user) { login account, :ok }
+
+    it 'returns starred Contacts' do
+      jget contact_stars_path
+      expect(response).to have_http_status :ok
+
+      payload = parsed_body
+      byebug
+      expect(payload.map { |e| e['star'] }.all? { |e| e }).to be true
+    end
+    it 'does not return contacts that are not starred' do
+      jget contact_stars_path
+      expect(response).to have_http_status :ok
+
+      payload = parsed_body
+      byebug
+      expect(payload.map { |e| e['star'] }.any? { |e| e }).to be false
+    end
+  end
+
+  context 'modify starred contact' do
+    let(:account) { signup user_attr, :ok }
+    let!(:user) { login account, :ok }
+
+    it 'modify contact star without error' do
+      jput contacts_star_path(1), star: true
+      expect(response).to have_http_status :ok
+
+      expect(parsed_body).to_not have_key "errors"
+
+      jget contacts_star_path(1)
+      expect(response).to have_http_status :ok
+
+      expect(parsed_body['star']).to eq false
+
+      jput contacts_star_path(1), star: true
+
+    end
+
+    it 'verify contact is modified' do
+      jget contacts_star_path(1)
+      expect(response).to have_http_status :ok
+      expect(parsed_body['star']).to eq false
+
+      jput contacts_star_path(1), star: true
+      expect(response).to have_http_status :modified
+      expect(parsed_body['star']).to eq true
+    end
+
+    it 'verify contact star persist to index route' do
+      jput contacts_star_path(1), star: true
+      expect(response).to have_http_status :modified
+      
+      jget contacts_path
+      expect(response).to have_http_status :ok
+
+      payload = parsed_body
+      expect(payload[id - 1]['star']).to eq true
+    end
+  end
 end
