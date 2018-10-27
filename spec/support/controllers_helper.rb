@@ -17,28 +17,33 @@ module ControllersHelper
       FactoryGirl.attributes_for(model, :invalid, ancestr(parent))
   end
 
-  def valid_session
-    {}
+  def login_helper(attr)
+    # byebug
+    request.headers.merge! User.find(attr[:user_id]).create_new_auth_token
+    sign_in User.find(attr[:user_id])
   end
 
 end
 
 RSpec.shared_examples "GET #index" do |model, parent = nil|
-  let(:valid_attributes) { valid_model_attrs(model, parent) } 
+  let(:valid_attributes) { valid_model_attrs(model, parent) }
+  let(:valid_session) { parent.nil? ? {} : login_helper(valid_attributes) }
 
   it "returns a success response" do
-    contact = model_class(model).create! valid_attributes
+    obj = model_class(model).create! valid_attributes
     get :index, params: {}, session: valid_session
+    # byebug
     expect(response).to be_successful
   end
 end
 
 RSpec.shared_examples "GET #show" do |model, parent = nil|
-  let(:valid_attributes) { valid_model_attrs(model, parent) } 
+  let(:valid_attributes) { valid_model_attrs(model, parent) }
+  let(:valid_session) { parent.nil? ? {} : login_helper(valid_attributes) }
 
   it "returns a success response" do
-    contact = model_class(model).create! valid_attributes
-    get :show, params: {id: contact.to_param}, session: valid_session
+    obj = model_class(model).create! valid_attributes
+    get :show, params: {id: obj.to_param}, session: valid_session
     expect(response).to be_successful
   end
 end
@@ -46,6 +51,7 @@ end
 RSpec.shared_examples "POST #create" do |model, parent = nil|
   let(:valid_attributes) { valid_model_attrs(model, parent) }
   let(:invalid_attributes) { invalid_model_attr(model, parent) }
+  let(:valid_session) { parent.nil? ? {} : login_helper(valid_attributes) }
 
   context "with valid params" do
     it "creates a new Contact" do
@@ -76,6 +82,7 @@ end
 RSpec.shared_examples "PUT #update" do |model, attrs, parent = nil|
   let(:valid_attributes) { valid_model_attrs(model, parent) }
   let(:invalid_attributes) { invalid_model_attr(model, parent) }
+  let(:valid_session) { parent.nil? ? {} : login_helper(valid_attributes) }
 
   context "with valid params" do
     let(:new_attributes) { valid_model_attrs(model, parent)}
@@ -114,6 +121,7 @@ end
 
 RSpec.shared_examples "DELETE #destroy" do |model, parent = nil|
   let(:valid_attributes) { valid_model_attrs(model, parent) } 
+  let(:valid_session) { parent.nil? ? {} : login_helper(valid_attributes) }
 
   it "destroys the requested #{model}" do
     obj = model_class(model).create! valid_attributes

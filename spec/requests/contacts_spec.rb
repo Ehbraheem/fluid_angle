@@ -19,7 +19,7 @@ RSpec.describe "Contacts", type: :request do
         let(:response_check) do
           expect(payload.count).to eq resources.count
           attrs.each do |attr|  
-            expect(payload.map { |e| e[attr.to_s] }).to eq(resources.map { |e| e[attr] }) # No sort/paginate
+            expect(payload.map { |e| e[attr.to_s] }).to match_array(resources.map { |e| e[attr] }) # No sort/paginate
           end
         end
       end

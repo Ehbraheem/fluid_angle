@@ -47,9 +47,11 @@ RSpec.configure do |config|
   config.include ModelsHelper, type: :model
 
   config.include ApiHelper, type: :request
+  config.include ApiHelper, type: :controller
   config.include ModelsHelper, type: :request
   config.include ControllersHelper, type: :controller
   config.include ModelsHelper, type: :controller
+
 
   # This option will default to `:apply_to_host_groups` in RSpec 4 (and will
   # have no way to turn it off -- the option exists only for backwards

@@ -20,10 +20,6 @@ module ApiHelper
     end
   end
 
-  def user_attr
-    FactoryGirl.attributes_for :user
-  end
-
   def signup(reg, status = :ok)
     jpost user_registration_path, reg
     expect(response).to have_http_status status
@@ -54,6 +50,10 @@ module ApiHelper
       @last_tokens = %W(uid client token-type access-token).inject({}) { |mem, var| mem[var] = response.headers[var]; mem }
     end
     @last_tokens || {}
+  end
+
+  def user_attr
+    FactoryGirl.attributes_for :user
   end
 
   # Vague solution to avoid leaking User instance and to simulate real life scenario of 1 Authenticated User => Many Contacts
