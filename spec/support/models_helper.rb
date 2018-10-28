@@ -6,7 +6,7 @@ module ModelsHelper
   def build_without_trait(model, ancestr = nil, trait = nil)
     params = [trait, ancestr].select { |e| !!(e) }
     # byebug
-    params.empty? ? FactoryGirl.build(model) : FactoryGirl.build(model, *params)
+    params.empty? ? FactoryBot.build(model) : FactoryBot.build(model, *params)
   end
 
   def build_db_obj(model, ancestr, trait = nil)
@@ -14,11 +14,11 @@ module ModelsHelper
   end
 
   def create_db_obj(model, ancestr, trait = nil)
-    !!(!ancestr) ? FactoryGirl.create(model, trait) : FactoryGirl.create(model, trait, ancestr)
+    !!(!ancestr) ? FactoryBot.create(model, trait) : FactoryBot.create(model, trait, ancestr)
   end
 
   def create_db_objs(model, ancestr)
-    !!(!ancestr) ? FactoryGirl.create_list(model, 10) : FactoryGirl.create_list(model, 10, ancestr)
+    !!(!ancestr) ? FactoryBot.create_list(model, 10) : FactoryBot.create_list(model, 10, ancestr)
   end
 
   def create_parent(parent)
@@ -39,10 +39,10 @@ module ModelsHelper
 end
 
 RSpec.shared_examples 'Existing object' do |model, parent = nil| 
-  # let!(:objects) { FactoryGirl.create_list :object, 2, :with_static_phone, user_id: user.id }
-  # let!(:objects) { 3.times.map { |e| FactoryGirl.create :object, parent } }
+  # let!(:objects) { FactoryBot.create_list :object, 2, :with_static_phone, user_id: user.id }
+  # let!(:objects) { 3.times.map { |e| FactoryBot.create :object, parent } }
   let(:ancestr) do
-    # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryBot.create(parent) }
     create_parent parent
   end
   let!(:objects) { create_db_objs model, ancestr }
@@ -60,7 +60,7 @@ end
 
 RSpec.shared_examples 'valid with valid attributes' do |model, parent = nil|
   let(:ancestr) do
-    # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryBot.create(parent) }
     create_parent parent
   end
 
@@ -82,7 +82,7 @@ end
 
 RSpec.shared_examples 'invalid with invalid attributes' do |model, parent = nil|
   let(:ancestr) do
-    # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryBot.create(parent) }
     create_parent parent
   end
 
@@ -102,15 +102,15 @@ RSpec.shared_examples 'invalid with invalid attributes' do |model, parent = nil|
 end
 
 RSpec.shared_examples 'CRUD' do |model, parent = nil|
-  # let!(:objects) { FactoryGirl.create_list :object, 2, :with_static_phone, parent }
-  # let!(:objects) { 3.times.map { |e| FactoryGirl.create :object, parent } }
+  # let!(:objects) { FactoryBot.create_list :object, 2, :with_static_phone, parent }
+  # let!(:objects) { 3.times.map { |e| FactoryBot.create :object, parent } }
   let(:ancestr) do
-    # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryBot.create(parent) }
     create_parent parent
   end
 
   let!(:objects) { create_db_objs model, ancestr }
-  let(:object) { FactoryGirl.attributes_for model, ancestr }
+  let(:object) { FactoryBot.attributes_for model, ancestr }
 
   it "can create valid #{model.to_s.capitalize}" do
     obj = create_db_obj model, ancestr
@@ -138,7 +138,7 @@ end
 
 RSpec.shared_examples 'Uniqueness Validation' do |model, attrs = [], parent = nil|
   let(:ancestr) do
-    # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryBot.create(parent) }
     create_parent parent
   end
 
