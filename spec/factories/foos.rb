@@ -1,9 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :foo_faked, class: 'Foo' do
     name { Faker::Name.name }
 
     trait :invalid do
-      name nil
+      name { nil }
     end
   end
 

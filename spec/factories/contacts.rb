@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :contact do
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
@@ -7,9 +7,9 @@ FactoryGirl.define do
     star { Faker::Boolean.boolean }
 
     trait :invalid do
-      first_name nil
-      last_name nil
-      phone_number nil
+      first_name { nil }
+      last_name { nil }
+      phone_number { nil }
     end
 
     trait :with_static_phone do

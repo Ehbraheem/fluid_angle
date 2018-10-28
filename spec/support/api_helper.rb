@@ -53,7 +53,7 @@ module ApiHelper
   end
 
   def user_attr
-    FactoryGirl.attributes_for :user
+    FactoryBot.attributes_for :user
   end
 
   # Vague solution to avoid leaking User instance and to simulate real life scenario of 1 Authenticated User => Many Contacts
@@ -70,7 +70,7 @@ end
 
 RSpec.shared_examples 'all resource' do |model, parent = nil|
   let(:ancestr) { create_parent_mock parent }
-  let!(:resources) { (1..5).map { |e| FactoryGirl.create model, ancestr } }
+  let!(:resources) { (1..5).map { |e| FactoryBot.create model, ancestr } }
   let(:payload) { parsed_body }
 
   it 'check request/response' do
@@ -91,7 +91,7 @@ end
 
 RSpec.shared_examples 'specific resource' do |model, parent = nil|
   let(:ancestr) { create_parent_mock parent }
-  let(:resource) { FactoryGirl.create model, ancestr }
+  let(:resource) { FactoryBot.create model, ancestr }
   let(:bad_id) { 4_556_645 }
   let(:payload) { parsed_body }
 
@@ -115,7 +115,7 @@ end
 
 RSpec.shared_examples 'create a new resource' do |model, parent = nil|
   let(:ancestr) { create_parent_mock parent }
-  let(:resource_attr) { FactoryGirl.attributes_for model, ancestr }
+  let(:resource_attr) { FactoryBot.attributes_for model, ancestr }
 
   it "can create #{model.to_s.classify}" do
     jpost send("#{model}s_path"), model => resource_attr 
@@ -129,8 +129,8 @@ end
 
 RSpec.shared_examples 'existing resource' do |model, parent = nil|
   let(:ancestr) { create_parent_mock parent }
-  let(:resource) { FactoryGirl.create model, ancestr }
-  let(:new_state) { FactoryGirl.attributes_for model }
+  let(:resource) { FactoryBot.create model, ancestr }
+  let(:new_state) { FactoryBot.attributes_for model }
 
   it 'can be updated from API endpoint' do
     pre_check if respond_to?(:pre_check)

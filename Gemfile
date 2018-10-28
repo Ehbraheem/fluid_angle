@@ -36,7 +36,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 3.8', '>= 3.8.0'
   gem 'database_cleaner', '~> 1.5', '>= 1.5.3'
-  gem 'factory_girl_rails', '~> 4.7', '>= 4.7.0'
+  gem 'factory_bot_rails', '~> 4.8', '>= 4.8.0'
   gem 'faker', '~> 1.6', '>= 1.6.6'
 end
 

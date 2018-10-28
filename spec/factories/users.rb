@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
     name { Faker::Name.name }
@@ -7,9 +7,9 @@ FactoryGirl.define do
     password { Faker::Internet.password }
 
     trait :invalid do
-      email nil
-      username nil
-      password nil
+      email { nil }
+      username { nil }
+      password { nil }
     end
   end
 end

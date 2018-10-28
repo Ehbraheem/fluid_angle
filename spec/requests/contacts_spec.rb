@@ -72,7 +72,7 @@ RSpec.describe 'Contacts', type: :request do
   context 'starred Contacts' do
     let(:account) { signup user_attr, :ok }
     let!(:user) { login account, :ok }
-    let!(:resources) { FactoryGirl.create_list :contact, 20, user_id: user['id'] }
+    let!(:resources) { FactoryBot.create_list :contact, 20, user_id: user['id'] }
 
     it 'returns starred Contacts' do
       jget contacts_stars_path
@@ -97,7 +97,7 @@ RSpec.describe 'Contacts', type: :request do
   context 'modify starred contact' do
     let(:account) { signup user_attr, :ok }
     let!(:user) { login account, :ok }
-    let!(:resources) { FactoryGirl.create_list :contact, 20, user_id: user['id'] }
+    let!(:resources) { FactoryBot.create_list :contact, 20, user_id: user['id'] }
     let(:contact) { Contact.where(star: false).last }
 
     it 'modify contact star without error' do

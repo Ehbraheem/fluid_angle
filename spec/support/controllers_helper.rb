@@ -1,6 +1,6 @@
 module ControllersHelper
   def valid_model_attrs(model, parent = nil)
-    FactoryGirl.attributes_for model, ancestr(parent)
+    FactoryBot.attributes_for model, ancestr(parent)
   end
 
   def ancestr(parent)
@@ -12,8 +12,8 @@ module ControllersHelper
 
   def invalid_model_attr(model, parent = nil)
     !!(!parent) ? 
-      FactoryGirl.attributes_for(model, :invalid) :
-      FactoryGirl.attributes_for(model, :invalid, ancestr(parent))
+      FactoryBot.attributes_for(model, :invalid) :
+      FactoryBot.attributes_for(model, :invalid, ancestr(parent))
   end
 
   def login_helper(attr)
