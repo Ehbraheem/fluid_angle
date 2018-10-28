@@ -14,6 +14,8 @@ class User < ActiveRecord::Base
   validates :username, presence: :true, uniqueness: { case_sensitive: false }
   validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, multiline: true
 
+  scope :starred_contacts, ->(user_id) { Contact.where(star: true, user_id: user_id) }
+
   def login
     @login || self.username || self.email
   end

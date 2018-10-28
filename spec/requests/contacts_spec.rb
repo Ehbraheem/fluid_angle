@@ -72,63 +72,63 @@ RSpec.describe "Contacts", type: :request do
   context 'starred Contacts' do
     let(:account) { signup user_attr, :ok }
     let!(:user) { login account, :ok }
+    let!(:resources) { FactoryGirl.create_list :contact, 20, user_id: user['id'] }
 
     it 'returns starred Contacts' do
-      jget contact_stars_path
+      jget contacts_stars_path
       expect(response).to have_http_status :ok
 
       payload = parsed_body
-      byebug
-      expect(payload.map { |e| e['star'] }.all? { |e| e }).to be true
+      # byebug
+      # expect(payload.map { |e| e['star'] }.all? { |e| e }).to be true
+      expect(payload.map { |e| e['star'] }.all? true).to be true
     end
+
     it 'does not return contacts that are not starred' do
-      jget contact_stars_path
+      jget contacts_stars_path
       expect(response).to have_http_status :ok
 
       payload = parsed_body
-      byebug
-      expect(payload.map { |e| e['star'] }.any? { |e| e }).to be false
+      # byebug
+      expect(payload.map { |e| e['star'] }.any? false).to be false
     end
   end
 
   context 'modify starred contact' do
     let(:account) { signup user_attr, :ok }
     let!(:user) { login account, :ok }
+    let!(:resources) { FactoryGirl.create_list :contact, 20, user_id: user['id'] }
+    let(:contact) { Contact.where(star: false).last }
 
     it 'modify contact star without error' do
-      jput contacts_star_path(1), star: true
+      jput contact_star_path(contact.id), star: true
       expect(response).to have_http_status :ok
 
       expect(parsed_body).to_not have_key "errors"
-
-      jget contacts_star_path(1)
-      expect(response).to have_http_status :ok
-
-      expect(parsed_body['star']).to eq false
-
-      jput contacts_star_path(1), star: true
-
     end
 
     it 'verify contact is modified' do
-      jget contacts_star_path(1)
+      jget contact_path(contact.id)
+      # byebug
       expect(response).to have_http_status :ok
       expect(parsed_body['star']).to eq false
 
-      jput contacts_star_path(1), star: true
-      expect(response).to have_http_status :modified
+      jput contact_star_path(contact.id), star: true
+      expect(response).to have_http_status :ok
       expect(parsed_body['star']).to eq true
     end
 
     it 'verify contact star persist to index route' do
-      jput contacts_star_path(1), star: true
-      expect(response).to have_http_status :modified
-      
+      jput contact_star_path(contact.id), star: true
+      expect(response).to have_http_status :ok
+
       jget contacts_path
       expect(response).to have_http_status :ok
 
       payload = parsed_body
-      expect(payload[id - 1]['star']).to eq true
+      # byebug
+      contact.reload
+      expect(payload.any? {|e| e['id'] == contact.id && e['star'] == contact.star}).to eq true
     end
   end
 end

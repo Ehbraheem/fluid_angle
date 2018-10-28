@@ -1,6 +1,6 @@
 class ContactsController < ApplicationController
   before_action :set_contact, only: [:show, :update, :destroy]
-  wrap_parameters :contact, include: %i(first_name last_name email phone_number star user_id)
+  wrap_parameters :contact, include: %w(first_name last_name email phone_number star user_id)
   before_action :authenticate_user!
 
   # GET /contacts
@@ -45,6 +45,21 @@ class ContactsController < ApplicationController
     @contact.destroy
 
     head :no_content
+  end
+
+  def stars
+    @contacts = User.starred_contacts current_user.id
+    render :index, status: :ok
+  end
+
+  def star
+    @contact = Contact.find params[:contact_id]
+    # byebug
+    if @contact.update(contact_params)
+      render :show, status: :ok#, location: @contact
+    else
+      render json: @contact.errors, status: :unprocessable_entity
+    end
   end
 
   private

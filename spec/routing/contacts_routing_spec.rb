@@ -9,11 +9,11 @@ RSpec.describe ContactsController, type: :routing do
     end
 
     it 'routes to #stars for a single contact' do
-      expect(get: contacts_star_path(1)).to route_to('contacts#star', id: '1', format: :json)
+      expect(patch: contact_star_path(1)).to route_to('contacts#star', contact_id: '1', format: :json)
     end
 
     it 'edit star for a single contact' do
-      expect(put: contacts_star_path(1)).to route_to('contacts#edit_star', id: '1', format: :json)
+      expect(put: contact_star_path(1)).to route_to('contacts#star', contact_id: '1', format: :json)
     end
   end
 end
