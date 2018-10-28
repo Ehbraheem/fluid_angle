@@ -4,15 +4,15 @@ RSpec.describe Contact, type: :model do
   include_context 'db_cleanup_each'
   # let(:user) { FactoryGirl.create :user }
 
-  it_should_behave_like 'Existing object', [:contact, :user]
+  it_should_behave_like 'Existing object', %i(contact user)
 
-  it_should_behave_like 'valid with valid attributes', [:contact, :user ]
+  it_should_behave_like 'valid with valid attributes', %i(contact user)
 
-  it_should_behave_like 'invalid with invalid attributes', [:contact, :user]
+  it_should_behave_like 'invalid with invalid attributes', %i(contact user)
 
-  it_should_behave_like 'CRUD', [:contact, :user]
+  it_should_behave_like 'CRUD', %i(contact user)
 
-  it_should_behave_like 'Uniqueness Validation', [:contact, [:email, :phone_number], :user]
+  it_should_behave_like 'Uniqueness Validation', [:contact, %i(email phone_number), :user]
 
   context 'Format Validation' do
     let(:user) { FactoryGirl.create :user }

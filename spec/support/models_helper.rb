@@ -1,20 +1,19 @@
 module ModelsHelper
-
   def model_class(type)
     Object.const_get(type.to_s.classify)
   end
 
-  def build_without_trait(model, ancestr=nil, trait=nil)
+  def build_without_trait(model, ancestr = nil, trait = nil)
     params = [trait, ancestr].select { |e| !!(e) }
     # byebug
     params.empty? ? FactoryGirl.build(model) : FactoryGirl.build(model, *params)
   end
 
-  def build_db_obj(model, ancestr, trait=nil)
+  def build_db_obj(model, ancestr, trait = nil)
     build_without_trait(model, ancestr, trait)
   end
 
-  def create_db_obj(model, ancestr, trait=nil)
+  def create_db_obj(model, ancestr, trait = nil)
     !!(!ancestr) ? FactoryGirl.create(model, trait) : FactoryGirl.create(model, trait, ancestr)
   end
 
@@ -23,17 +22,19 @@ module ModelsHelper
   end
 
   def create_parent(parent)
-    return parent if !parent
+    return parent unless parent
+
     { "#{parent}_id" => create_db_obj(parent, nil).id }
   end
 
   def error_checker(options = {})
     return if options.empty?
+
     expect(options[:obj]).to respond_to :errors
     expect(options[:obj].errors).to respond_to :messages
-    expect(options[:obj].errors.messages).to include %r(#{options[:key]})
+    expect(options[:obj].errors.messages).to include(/#{options[:key]}/)
     expect(options[:obj].errors.messages).to have_key options[:key]
-    expect(options[:obj].errors.messages[options[:key]]).to include %r(#{options[:msg]})
+    expect(options[:obj].errors.messages[options[:key]]).to include(/#{options[:msg]}/)
   end  
 end
 
@@ -59,7 +60,7 @@ end
 
 RSpec.shared_examples 'valid with valid attributes' do |model, parent = nil|
   let(:ancestr) do
-     # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryGirl.create(parent) }
     create_parent parent
   end
 
@@ -81,7 +82,7 @@ end
 
 RSpec.shared_examples 'invalid with invalid attributes' do |model, parent = nil|
   let(:ancestr) do
-     # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryGirl.create(parent) }
     create_parent parent
   end
 
@@ -104,7 +105,7 @@ RSpec.shared_examples 'CRUD' do |model, parent = nil|
   # let!(:objects) { FactoryGirl.create_list :object, 2, :with_static_phone, parent }
   # let!(:objects) { 3.times.map { |e| FactoryGirl.create :object, parent } }
   let(:ancestr) do
-     # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryGirl.create(parent) }
     create_parent parent
   end
 
@@ -137,7 +138,7 @@ end
 
 RSpec.shared_examples 'Uniqueness Validation' do |model, attrs = [], parent = nil|
   let(:ancestr) do
-     # !!(!parent) || { parent => FactoryGirl.create(parent) }
+    # !!(!parent) || { parent => FactoryGirl.create(parent) }
     create_parent parent
   end
 

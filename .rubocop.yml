@@ -15,6 +15,8 @@ AllCops:
     - "node_modules/**/*"
     - "spec/rails_helper.rb"
     - "spec/spec_helper.rb"
+    - "app/views/**/*"
+    - "app/models/*"
   UseCache: false
   TargetRubyVersion: 2.5
 
@@ -62,6 +64,24 @@ Style/PercentLiteralDelimiters:
     "%x": "()"
 Style/WordArray:
   Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Style/RedundantParentheses:
+  Enabled: false
+Style/InverseMethods:
+  Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
+Style/MultilineTernaryOperator:
+  Enabled: false
+Style/Semicolon:
+  Enabled: false
+Style/EachWithObject:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/EmptyMethod:
+  Enabled: false
 #################### Layout ###########################
 Layout/TrailingBlankLines:
   AutoCorrect: true
@@ -93,6 +113,8 @@ Layout/EndOfLine:
   Enabled: false
   EnforcedStyle: native
 Layout/TrailingWhitespace:
+  Enabled: false
+Layout/AlignArray:
   Enabled: false
 #################### Naming ###########################
 Naming/PredicateName:
