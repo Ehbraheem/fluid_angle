@@ -1,5 +1,4 @@
 module ApiHelper
-
   # include ::ModelsHelper
   
   def parsed_body
@@ -13,10 +12,11 @@ module ApiHelper
         params = params.to_json
       end
       # byebug
-      self.send(verb,
-                path,
-                params: params,
-                headers: headers.merge(access_tokens))
+      # self.send(verb,
+      send(verb,
+        path,
+        params: params,
+        headers: headers.merge(access_tokens))
     end
   end
 
@@ -35,7 +35,7 @@ module ApiHelper
     response.ok? ? parsed_body['data'] : parsed_body
   end
 
-  def logout status=:ok
+  def logout(status = :ok)
     jdelete destroy_user_session_path
     @last_tokens = {}
     expect(response).to have_http_status status if status
@@ -47,7 +47,7 @@ module ApiHelper
 
   def access_tokens
     if access_tokens?
-      @last_tokens = %W(uid client token-type access-token).inject({}) { |mem, var| mem[var] = response.headers[var]; mem }
+      @last_tokens = %w(uid client token-type access-token).inject({}) { |mem, var| mem[var] = response.headers[var]; mem }
     end
     @last_tokens || {}
   end
@@ -58,7 +58,7 @@ module ApiHelper
 
   # Vague solution to avoid leaking User instance and to simulate real life scenario of 1 Authenticated User => Many Contacts
   def create_parent_mock(parent)
-    if parent === :user # Valid JSON payload from server
+    if parent == :user # Valid JSON payload from server
       account = signup user_attr, :ok
       user = login account, :ok
       { user_id: user['id'] }
@@ -68,21 +68,20 @@ module ApiHelper
   end
 end
 
-
 RSpec.shared_examples 'all resource' do |model, parent = nil|
   let(:ancestr) { create_parent_mock parent }
   let!(:resources) { (1..5).map { |e| FactoryGirl.create model, ancestr } }
-  let(:payload) { parsed_body}
+  let(:payload) { parsed_body }
 
   it 'check request/response' do
-    jget send("#{model}s_path"), {}, { 'Accept' => 'application/json' }
+    jget send("#{model}s_path"), {}, 'Accept' => 'application/json' 
     expect(request.method).to eq 'GET'
     expect(response).to have_http_status :ok
     expect(response.content_type).to eq 'application/json'
   end
 
   it 'returns all resource' do
-    jget send("#{model}s_path"), {}, { 'Accept' => 'application/json' }
+    jget send("#{model}s_path"), {}, 'Accept' => 'application/json' 
 
     expect(response).to have_http_status :ok
     expect(payload.count).to eq resources.count
@@ -94,7 +93,7 @@ RSpec.shared_examples 'specific resource' do |model, parent = nil|
   let(:ancestr) { create_parent_mock parent }
   let(:resource) { FactoryGirl.create model, ancestr }
   let(:bad_id) { 4_556_645 }
-  let(:payload) { parsed_body}
+  let(:payload) { parsed_body }
 
   it "returns #{model.to_s.classify} when given correct ID" do
     jget send("#{model}_path", resource.id)
@@ -119,7 +118,7 @@ RSpec.shared_examples 'create a new resource' do |model, parent = nil|
   let(:resource_attr) { FactoryGirl.attributes_for model, ancestr }
 
   it "can create #{model.to_s.classify}" do
-    jpost send("#{model}s_path"), { model => resource_attr }
+    jpost send("#{model}s_path"), model => resource_attr 
     expect(response).to have_http_status :created
     expect(response.content_type).to eq 'application/json'
 
@@ -135,7 +134,7 @@ RSpec.shared_examples 'existing resource' do |model, parent = nil|
 
   it 'can be updated from API endpoint' do
     pre_check if respond_to?(:pre_check)
-    jput send("#{model}_path", resource.id), { model => new_state }
+    jput send("#{model}_path", resource.id), model => new_state 
     expect(response).to have_http_status :ok
     post_check if respond_to?(:post_check)
   end

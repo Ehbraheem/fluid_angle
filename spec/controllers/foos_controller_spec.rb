@@ -30,15 +30,13 @@ RSpec.describe FoosController, type: :controller do
     request.headers['accept'] = 'application/json'
   end
 
-  it_should_behave_like "GET #index", :foo
+  it_should_behave_like 'GET #index', :foo
 
-  it_should_behave_like "GET #show", :foo
+  it_should_behave_like 'GET #show', :foo
 
-  it_should_behave_like "POST #create", :foo
+  it_should_behave_like 'POST #create', :foo
 
-  it_should_behave_like "PUT #update", [:foo, [:name]]
+  it_should_behave_like 'PUT #update', :foo, [:name]
 
-  it_should_behave_like "DELETE #destroy", :foo
-
-
+  it_should_behave_like 'DELETE #destroy', :foo
 end

@@ -35,14 +35,13 @@ RSpec.describe ContactsController, type: :controller do
   # ContactsController. Be sure to keep this updated too.
   # let(:valid_session) { {} }
 
-  it_should_behave_like "GET #index", [:contact, :user]
+  it_should_behave_like 'GET #index', %i(contact user) 
 
-  it_should_behave_like "GET #show", [:contact, :user] 
+  it_should_behave_like 'GET #show', %i(contact user)  
 
-  it_should_behave_like "POST #create", [:contact, :user] 
+  it_should_behave_like 'POST #create', %i(contact user) 
 
-  it_should_behave_like "PUT #update", [:contact, %i(first_name last_name phone_number email star), :user]
+  it_should_behave_like 'PUT #update', [:contact, %i(first_name last_name phone_number email star), :user]
 
-  it_should_behave_like "DELETE #destroy", [:contact, :user] 
-
+  it_should_behave_like 'DELETE #destroy', %i(contact user) 
 end

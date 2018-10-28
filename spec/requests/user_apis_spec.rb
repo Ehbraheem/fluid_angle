@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "User Authentication API", type: :request do
+RSpec.describe 'User Authentication API', type: :request do
   include_context 'db_cleanup_each', :transaction
   let(:user_attr) { FactoryGirl.attributes_for :user }
 
@@ -16,7 +16,7 @@ RSpec.describe "User Authentication API", type: :request do
         expect(payload['data']).to include 'provider' => 'email'
         expect(payload['data']).to include 'uid' => user_attr[:email]
         expect(payload['data']).to include 'name' => user_attr[:name]
-        expect(payload['data']).to include 'email'=> user_attr[:email]
+        expect(payload['data']).to include 'email' => user_attr[:email]
         expect(payload['data']).to include 'created_at', 'updated_at'
       end
     end
@@ -30,10 +30,10 @@ RSpec.describe "User Authentication API", type: :request do
           expect(payload).to include 'status' => 'error'
           expect(payload).to include 'data'
           expect(payload).to include 'errors'
-          expect(payload['data']).to include 'email'=> nil
+          expect(payload['data']).to include 'email' => nil
           expect(payload['errors']).to include 'email'
           expect(payload['errors']).to include 'full_messages'
-          expect(payload['errors']['full_messages']).to include /email/i
+          expect(payload['errors']['full_messages']).to include(/email/i)
         end
       end
 
@@ -48,7 +48,7 @@ RSpec.describe "User Authentication API", type: :request do
           expect(payload).to include 'errors'
           expect(payload['errors']).to include 'email'
           expect(payload['errors']).to include 'full_messages'
-          expect(payload['errors']['full_messages']).to include /email/i
+          expect(payload['errors']['full_messages']).to include(/email/i)
         end
       end
     end

@@ -14,12 +14,13 @@ class User < ActiveRecord::Base
   validates :username, presence: :true, uniqueness: { case_sensitive: false }
   validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, multiline: true
 
+  scope :starred_contacts, ->(user_id) { Contact.where(star: true, user_id: user_id) }
+
   def login
     @login || self.username || self.email
   end
 
   def self.find_for_database_authentication(warden_conditions)
-    byebug
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
       where(conditions).where(["lower(username) = :value OR lower(email) = :value", { :value => login.downcase }]).first
