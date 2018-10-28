@@ -51,11 +51,26 @@ module ApiHelper
     end
     @last_tokens || {}
   end
+
+  def user_attr
+    FactoryGirl.attributes_for :user
+  end
+
+  # Vague solution to avoid leaking User instance and to simulate real life scenario of 1 Authenticated User => Many Contacts
+  def create_parent_mock(parent)
+    if parent === :user # Valid JSON payload from server
+      account = signup user_attr, :ok
+      user = login account, :ok
+      { user_id: user['id'] }
+    else
+      create_parent parent
+    end
+  end
 end
 
 
 RSpec.shared_examples 'all resource' do |model, parent = nil|
-  let(:ancestr) { create_parent parent }
+  let(:ancestr) { create_parent_mock parent }
   let!(:resources) { (1..5).map { |e| FactoryGirl.create model, ancestr } }
   let(:payload) { parsed_body}
 
@@ -76,7 +91,7 @@ RSpec.shared_examples 'all resource' do |model, parent = nil|
 end
 
 RSpec.shared_examples 'specific resource' do |model, parent = nil|
-  let(:ancestr) { create_parent parent }
+  let(:ancestr) { create_parent_mock parent }
   let(:resource) { FactoryGirl.create model, ancestr }
   let(:bad_id) { 4_556_645 }
   let(:payload) { parsed_body}
@@ -100,7 +115,7 @@ RSpec.shared_examples 'specific resource' do |model, parent = nil|
 end
 
 RSpec.shared_examples 'create a new resource' do |model, parent = nil|
-  let(:ancestr) { create_parent parent }
+  let(:ancestr) { create_parent_mock parent }
   let(:resource_attr) { FactoryGirl.attributes_for model, ancestr }
 
   it "can create #{model.to_s.classify}" do
@@ -114,7 +129,7 @@ RSpec.shared_examples 'create a new resource' do |model, parent = nil|
 end
 
 RSpec.shared_examples 'existing resource' do |model, parent = nil|
-  let(:ancestr) { create_parent parent }
+  let(:ancestr) { create_parent_mock parent }
   let(:resource) { FactoryGirl.create model, ancestr }
   let(:new_state) { FactoryGirl.attributes_for model }
 

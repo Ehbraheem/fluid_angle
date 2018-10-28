@@ -1,11 +1,14 @@
 class ContactsController < ApplicationController
   before_action :set_contact, only: [:show, :update, :destroy]
   wrap_parameters :contact, include: %i(first_name last_name email phone_number star user_id)
+  before_action :authenticate_user!
 
   # GET /contacts
   # GET /contacts.json
   def index
-    @contacts = Contact.all
+    # @contacts = Contact.all
+    # byebug
+    @contacts = current_user.contacts
   end
 
   # GET /contacts/1
@@ -16,7 +19,8 @@ class ContactsController < ApplicationController
   # POST /contacts
   # POST /contacts.json
   def create
-    @contact = Contact.new(contact_params)
+    # @contact = Contact.new(contact_params)
+    @contact = current_user.contacts.build contact_params
 
     if @contact.save
       render :show, status: :created, location: @contact
